@@ -13,8 +13,8 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private String titulo;
-    @ManyToMany(mappedBy = "personas")
-    private List<Persona> autores;
+    @ManyToOne
+    private Persona autor;
     private List<String> generos;
     private List<String> lenguajes;
     private long descargas;
@@ -25,7 +25,7 @@ public class Libro {
 
     public Libro(DatosLibro datosLibro) {
         this.titulo = titulo;
-        this.autores = autores;
+        this.autor = autor;
         this.generos = generos;
         this.lenguajes = lenguajes;
         this.descargas = descargas;
@@ -55,12 +55,12 @@ public class Libro {
         this.generos = generos;
     }
 
-    public List<Persona> getAutores() {
-        return autores;
+    public Persona getAutor() {
+        return autor;
     }
 
-    public void setAutores(List<Persona> autores) {
-        this.autores = autores;
+    public void setAutor(Persona autor) {
+        this.autor = autor;
     }
 
     public List<String> getLenguajes() {

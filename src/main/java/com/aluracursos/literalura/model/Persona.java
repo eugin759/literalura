@@ -16,10 +16,7 @@ public class Persona {
     private Long fechaNacimineto;
     @Column(nullable = true)
     private Long fechaMuerte;
-    @ManyToMany
-    @JoinTable(name = "autor_libros",
-               joinColumns = @JoinColumn (name = "persona_id"),
-               inverseJoinColumns = @JoinColumn(name = "libro_id"))
+    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros;
 
 

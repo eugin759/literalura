@@ -25,5 +25,6 @@ public class LiteraluraApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		Principal principal = new Principal(repository1, repository2);
+		principal.muestraMenu();
 	}
 }
