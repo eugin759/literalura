@@ -3,6 +3,7 @@ package com.aluracursos.literalura.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "autores")
@@ -13,16 +14,19 @@ public class Autor {
     Long Id;
     private String nombre;
     @Column(nullable = true)
-    private Long fechaNacimineto;
+    private Long fechaNacimiento;
     @Column(nullable = true)
     private Long fechaMuerte;
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros;
 
+    public Autor() {
+    }
+
 
     public Autor(DatosAutor datosAutor) {
         this.nombre = datosAutor.nombre();
-        this.fechaNacimineto = datosAutor.fechaNacimiento();
+        this.fechaNacimiento = datosAutor.fechaNacimiento();
         this.fechaMuerte = datosAutor.fechaMuerte();
 
     }
@@ -43,12 +47,12 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public Long getFechaNacimineto() {
-        return fechaNacimineto;
+    public Long getFechaNacimiento() {
+        return fechaNacimiento;
     }
 
-    public void setFechaNacimineto(Long fechaNacimineto) {
-        this.fechaNacimineto = fechaNacimineto;
+    public void setFechaNacimiento(Long fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
     }
 
     public Long getFechaMuerte() {
@@ -65,5 +69,15 @@ public class Autor {
 
     public void setLibros(List<Libro> libros) {
         this.libros = libros;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Autor:" +
+                ", nombre='" + nombre + '\'' +
+                ", fechaNacimiento=" + fechaNacimiento +
+                ", fechaMuerte=" + fechaMuerte +
+                ", libros=" + libros.stream().map(Libro::getTitulo).collect(Collectors.toUnmodifiableList()) + "\n";
     }
 }

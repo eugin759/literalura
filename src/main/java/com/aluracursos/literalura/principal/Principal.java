@@ -17,6 +17,8 @@ public class Principal {
     private LibroRepository repository1;
     private AutorRepository repository2;
     private Scanner scanner = new Scanner(System.in);
+    private List<Libro> libros;
+    private List<Autor> autores;
 
 
 
@@ -43,6 +45,7 @@ public class Principal {
                     """;
 
             System.out.println(menu);
+
             opcion = scanner.nextInt();
             scanner.nextLine();
 
@@ -91,45 +94,78 @@ public class Principal {
         + "search=" + nombreLibro.replace(" ", "%20"));
         System.out.println(json);
         Datos datos = convierteDatos.obtenerDatos(json, Datos.class);
-      System.out.println("Punto de control \n" + datos.results().get(0));
-        return datos.results().get(0);
-
+        if(datos.results().isEmpty()){
+            return null;
+        }else {
+            return datos.results().get(0);
+        }
 
     }
 
 
     private void buscarLibro(){
         DatosLibro datosLibro = getDatosLibro();//creamos la plantilla de datos para maniobrar
-        DatosAutor datosAutor = datosLibro.autor().get(0);//creamos la plantilla de datos para maniobrar
-        libroOptional = repository1.findByTitulo(datosLibro.titulo()); //traemos info de la base de datos
-        if (libroOptional.isPresent()){
-            System.out.println("Libro existente");
-        }else {
-            autorOptional  = repository2.findByNombreContainsIgnoreCase(datosAutor.nombre());
-            if (autorOptional.isPresent()) {
-                Autor autor = new Autor(datosAutor);
-                Libro libro = new Libro(datosLibro, autor);
-                repository1.save(libro);
+        if(datosLibro != null){
+            DatosAutor datosAutor = datosLibro.autor().get(0);//creamos la plantilla de datos para maniobrar
+            libroOptional = repository1.findByTitulo(datosLibro.titulo()); //traemos info de la base de datos
+            if (libroOptional.isPresent()){
+                System.out.println("Libro existente");
+            }else {
+                autorOptional  = repository2.findByNombreContainsIgnoreCase(datosAutor.nombre());
+                if (autorOptional.isPresent()) {
+                    Autor autor = new Autor(datosAutor);
+                    Libro libro = new Libro(datosLibro, autor);
+                    repository1.save(libro);
 
-            }else{
-                Autor autor = new Autor(datosAutor);
-                Libro libro = new Libro(datosLibro, autor);
-                repository2.save(autor);
-                repository1.save(libro);
+                }else{
+                    Autor autor = new Autor(datosAutor);
+                    Libro libro = new Libro(datosLibro, autor);
+                    repository2.save(autor);
+                    repository1.save(libro);
 
+                }
             }
-            }
 
+        }else{
+            System.out.println("libro no encontrado");
+        }
     }
 
     private void mostrarLibrosListados() {
+        libros = repository1.findAll();
+        if(libros.isEmpty()){
+            System.out.println("Aun no hay libros");
+        }else {
+            libros.forEach(System.out::println);
+        }
     }
 
     private void mostrarAutoresListados() {
+        autores = repository2.findAll();
+        if(autores.isEmpty()){
+            System.out.println("Aun no hay autores registrados");
+        }else{
+            autores.stream().forEach(System.out::println);
+        }
     }
 
 
     private void autoresVivosPorAnio() {
+        System.out.println("De que año estamos hablando?");
+        String input = scanner.nextLine();
+        try {
+            int anio = Integer.parseInt(input);
+            List<Autor> autoresVivos = repository2.autorVivoEnCiertoAnio(anio);
+            if(autoresVivos.isEmpty()){
+                System.out.println("no hay nadie vivo en este año");
+            }else{
+                autoresVivos.stream().forEach(System.out::println);
+            }
+        }catch (NumberFormatException e){
+            System.out.println("Introduce un año valido");
+        }
+
+
     }
 
     private  void librosPorIdioma() {

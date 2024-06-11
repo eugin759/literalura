@@ -68,4 +68,14 @@ public class Libro {
     public void setDescargas(long descargas) {
         this.descargas = descargas;
     }
+
+    @Override
+    public String toString() {
+        return "Libro:" +
+                "titulo='" + titulo + '\'' +
+                ", autor=" + autor.getNombre() +
+                ", lenguajes=" + lenguajes +
+                ", descargas=" + descargas +
+                '}';
+    }
 }
