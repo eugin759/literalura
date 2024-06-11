@@ -46,38 +46,45 @@ public class Principal {
 
             System.out.println(menu);
 
-            opcion = scanner.nextInt();
-            scanner.nextLine();
+            try {
 
-            switch (opcion) {
-                case 1:
-                    buscarLibro();
-                    break;
+                opcion = scanner.nextInt();
+                scanner.nextLine();
 
-                case 2:
-                    mostrarLibrosListados();
-                    break;
+                switch (opcion) {
+                    case 1:
+                        buscarLibro();
+                        break;
 
-                case 3:
-                    mostrarAutoresListados();
-                    break;
+                    case 2:
+                        mostrarLibrosListados();
+                        break;
 
-                case 4:
-                    autoresVivosPorAnio();
-                    break;
+                    case 3:
+                        mostrarAutoresListados();
+                        break;
 
-                case 5:
-                    librosPorIdioma();
-                    break;
+                    case 4:
+                        autoresVivosPorAnio();
+                        break;
+
+                    case 5:
+                        librosPorIdioma();
+                        break;
 
 
-                case 0:
-                    System.out.println("Cerrando la aplicacion");
-                    break;
+                    case 0:
+                        System.out.println("Cerrando la aplicacion");
+                        break;
 
-                default:
-                    System.out.println("Opcion invalida");
+                    default:
+                        System.out.println("Opcion invalida");
+                        break;
 
+                }
+            }catch (InputMismatchException e){
+                System.out.println("Eso nisiquiera es un numero");
+                scanner.nextLine();
             }
         }
 
@@ -152,16 +159,18 @@ public class Principal {
 
     private void autoresVivosPorAnio() {
         System.out.println("De que año estamos hablando?");
-        String input = scanner.nextLine();
+        Long anio = scanner.nextLong();
         try {
-            int anio = Integer.parseInt(input);
+
             List<Autor> autoresVivos = repository2.autorVivoEnCiertoAnio(anio);
-            if(autoresVivos.isEmpty()){
+            if(autoresVivos == null){
                 System.out.println("no hay nadie vivo en este año");
+
             }else{
+                System.out.println("Si hubo:");
                 autoresVivos.stream().forEach(System.out::println);
             }
-        }catch (NumberFormatException e){
+        }catch (InputMismatchException e){
             System.out.println("Introduce un año valido");
         }
 
@@ -169,6 +178,35 @@ public class Principal {
     }
 
     private  void librosPorIdioma() {
+        System.out.println("En que idioma quieres buscar");
+        String idioma = scanner.nextLine().toLowerCase();
+        String lenguaje = idiomaLibro(idioma);
+        System.out.println("Lenguaje escogido:" + lenguaje);
+        libros = repository1.findByLenguajesContaining(lenguaje);
+        if (libros == null) {
+            System.out.println("No hay libros en ese idioma");
+        }else{
+            libros.stream().forEach(System.out::println);
+        }
+    }
 
+    private String idiomaLibro(String idioma){
+        switch (idioma){
+            case "ingles":
+                return "en";
+
+            case "frances":
+                return "fr";
+
+            case "portugues":
+                return "pt";
+
+            case "español":
+                return "es";
+
+            default:
+                System.out.println("Esa no es una opcion valida, pero para no ser mala onda te dire los que esten en español");
+                return "es";
+        }
     }
 }

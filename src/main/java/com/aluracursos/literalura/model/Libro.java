@@ -1,6 +1,7 @@
 package com.aluracursos.literalura.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class Libro {
     private String titulo;
     @ManyToOne
     private Autor autor;
-    private List<String> lenguajes;
+    private String lenguajes;
     private long descargas;
 
 
@@ -23,7 +24,7 @@ public class Libro {
 
     public Libro(DatosLibro datosLibro, Autor autor) {
         this.titulo = datosLibro.titulo();
-        this.lenguajes = datosLibro.lenguajes();
+        this.lenguajes = datosLibro.lenguajes().get(0);
         this.descargas = datosLibro.descargas();
         this.autor = autor;
     }
@@ -53,11 +54,11 @@ public class Libro {
         this.autor = autor;
     }
 
-    public List<String> getLenguajes() {
+    public String getLenguajes() {
         return lenguajes;
     }
 
-    public void setLenguajes(List<String> lenguajes) {
+    public void setLenguajes(String lenguajes) {
         this.lenguajes = lenguajes;
     }
 
