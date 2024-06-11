@@ -2,7 +2,7 @@ package com.aluracursos.literalura;
 
 import com.aluracursos.literalura.principal.Principal;
 import com.aluracursos.literalura.repository.LibroRepository;
-import com.aluracursos.literalura.repository.PersonaRepository;
+import com.aluracursos.literalura.repository.AutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,7 +15,7 @@ public class LiteraluraApplication implements CommandLineRunner {
 	@Autowired
 	private LibroRepository repository1;
 	@Autowired
-	private PersonaRepository repository2;
+	private AutorRepository repository2;
 
 	public static void main(String[] args) {
 		SpringApplication.run(LiteraluraApplication.class, args);

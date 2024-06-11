@@ -2,7 +2,7 @@ package com.aluracursos.literalura.principal;
 
 import com.aluracursos.literalura.model.*;
 import com.aluracursos.literalura.repository.LibroRepository;
-import com.aluracursos.literalura.repository.PersonaRepository;
+import com.aluracursos.literalura.repository.AutorRepository;
 import com.aluracursos.literalura.service.ConsumoAPI;
 import com.aluracursos.literalura.service.ConvierteDatos;
 
@@ -12,21 +12,17 @@ public class Principal {
     private ConsumoAPI consumoApi = new ConsumoAPI();
     private final String URL_BASE = "https://gutendex.com/books/?";
     private ConvierteDatos convierteDatos = new ConvierteDatos();
-    private List<DatosLibro> datosLibros = new ArrayList<>();
-    private List<Libro> libros;
     private Optional<Libro> libroOptional;
-    private List<DatosPersona> datosPersonas = new ArrayList<>();
-    private List<Persona> personas;
-    private Optional<Persona> personaOptional;
+    private Optional<Autor> autorOptional;
     private LibroRepository repository1;
-    private PersonaRepository repository2;
+    private AutorRepository repository2;
     private Scanner scanner = new Scanner(System.in);
 
 
 
 
 
-    public Principal(LibroRepository repository1, PersonaRepository repository2) {
+    public Principal(LibroRepository repository1, AutorRepository repository2) {
         this.repository1 = repository1;
         this.repository2 = repository2;
     }
@@ -95,6 +91,7 @@ public class Principal {
         + "search=" + nombreLibro.replace(" ", "%20"));
         System.out.println(json);
         Datos datos = convierteDatos.obtenerDatos(json, Datos.class);
+      System.out.println("Punto de control \n" + datos.results().get(0));
         return datos.results().get(0);
 
 
@@ -102,9 +99,26 @@ public class Principal {
 
 
     private void buscarLibro(){
-        DatosLibro datos = getDatosLibro();
-        Libro libro = new Libro(datos);
-        repository1.save(libro);
+        DatosLibro datosLibro = getDatosLibro();//creamos la plantilla de datos para maniobrar
+        DatosAutor datosAutor = datosLibro.autor().get(0);//creamos la plantilla de datos para maniobrar
+        libroOptional = repository1.findByTitulo(datosLibro.titulo()); //traemos info de la base de datos
+        if (libroOptional.isPresent()){
+            System.out.println("Libro existente");
+        }else {
+            autorOptional  = repository2.findByNombreContainsIgnoreCase(datosAutor.nombre());
+            if (autorOptional.isPresent()) {
+                Autor autor = new Autor(datosAutor);
+                Libro libro = new Libro(datosLibro, autor);
+                repository1.save(libro);
+
+            }else{
+                Autor autor = new Autor(datosAutor);
+                Libro libro = new Libro(datosLibro, autor);
+                repository2.save(autor);
+                repository1.save(libro);
+
+            }
+            }
 
     }
 

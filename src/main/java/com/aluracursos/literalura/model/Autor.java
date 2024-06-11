@@ -7,7 +7,7 @@ import java.util.List;
 @Entity
 @Table(name = "autores")
 
-public class Persona {
+public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long Id;
@@ -16,14 +16,14 @@ public class Persona {
     private Long fechaNacimineto;
     @Column(nullable = true)
     private Long fechaMuerte;
-    @OneToMany(mappedBy = "persona", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros;
 
 
-    public Persona(DatosPersona datosPersona) {
-        this.nombre = nombre;
-        this.fechaNacimineto = fechaNacimineto;
-        this.fechaMuerte = fechaMuerte;
+    public Autor(DatosAutor datosAutor) {
+        this.nombre = datosAutor.nombre();
+        this.fechaNacimineto = datosAutor.fechaNacimiento();
+        this.fechaMuerte = datosAutor.fechaMuerte();
 
     }
 

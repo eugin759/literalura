@@ -1,6 +1,5 @@
 package com.aluracursos.literalura.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -14,8 +13,7 @@ public class Libro {
     private Long Id;
     private String titulo;
     @ManyToOne
-    private Persona autor;
-    private List<String> generos;
+    private Autor autor;
     private List<String> lenguajes;
     private long descargas;
 
@@ -23,12 +21,11 @@ public class Libro {
     public Libro() {
     }
 
-    public Libro(DatosLibro datosLibro) {
-        this.titulo = titulo;
+    public Libro(DatosLibro datosLibro, Autor autor) {
+        this.titulo = datosLibro.titulo();
+        this.lenguajes = datosLibro.lenguajes();
+        this.descargas = datosLibro.descargas();
         this.autor = autor;
-        this.generos = generos;
-        this.lenguajes = lenguajes;
-        this.descargas = descargas;
     }
 
     public Long getId() {
@@ -47,19 +44,12 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public List<String> getGeneros() {
-        return generos;
-    }
 
-    public void setGeneros(List<String> generos) {
-        this.generos = generos;
-    }
-
-    public Persona getAutor() {
+    public Autor getAutor() {
         return autor;
     }
 
-    public void setAutor(Persona autor) {
+    public void setAutor(Autor autor) {
         this.autor = autor;
     }
 

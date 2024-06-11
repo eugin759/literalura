@@ -9,8 +9,7 @@ import java.util.List;
 
 public record DatosLibro(
         @JsonAlias("title") String titulo,
-        @JsonAlias("authors")List<Persona> authores,
-        @JsonAlias("subjects") List<String> generos,
+        @JsonAlias("authors") List<DatosAutor> autor,
         @JsonAlias("languages") List<String> lenguajes,
         @JsonAlias("download_count") Long descargas
         ) {
