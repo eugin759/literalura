@@ -7,6 +7,7 @@ import com.aluracursos.literalura.service.ConsumoAPI;
 import com.aluracursos.literalura.service.ConvierteDatos;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Principal {
     private ConsumoAPI consumoApi = new ConsumoAPI();
@@ -92,7 +93,6 @@ public class Principal {
 
     }
 
-    /////
 
   private DatosLibro getDatosLibro(){
         System.out.println("Que libro deseas buscar?");
@@ -177,7 +177,7 @@ public class Principal {
         try {
 
             List<Autor> autoresVivos = repository2.autorVivoEnCiertoAnio(anio);
-            if(autoresVivos == null){
+            if(autoresVivos.isEmpty()){
                 System.out.println("no hay nadie vivo en este año");
 
             }else{
@@ -194,17 +194,16 @@ public class Principal {
         System.out.println("En que idioma quieres buscar");
         String idioma = scanner.nextLine().toLowerCase();
         String lenguaje = idiomaLibro(idioma);
-        System.out.println("Lenguaje escogido:" + lenguaje);
-        List<Libro> librosLenguajes = repository1.findByLenguajes(lenguaje);
-        if (librosLenguajes.isEmpty()) {
+        libros = findByLenguajes(lenguaje);
+        if (libros.isEmpty()) {
             System.out.println("No hay libros en ese idioma");
         }else{
             libros.stream().forEach(System.out::println);
         }
     }
 
-    private String idiomaLibro(String idioma){
-        switch (idioma){
+    private String idiomaLibro(String idioma) {
+        switch (idioma) {
             case "ingles":
                 return "en";
 
@@ -227,9 +226,16 @@ public class Principal {
                 System.out.println("Ese idioma no lo tengo, pero para no ser mala onda te dire los que esten en español");
                 return "es";
         }
+    }
+
+        public List<Libro> findByLenguajes(String lenguaje) {
+            return repository1.findAll().stream()
+                    .filter(libro -> libro.getLenguajes().contains(lenguaje))
+                    .collect(Collectors.toList());
+        }
 
 
-
+//Metodos que pudieron ser pero ya no
 //        private void buscarLibro(){
 //            DatosLibro datosLibro = getDatosLibro();//creamos la plantilla de datos para maniobrar
 //            if(datosLibro != null){
@@ -266,5 +272,44 @@ public class Principal {
 //                System.out.println("libro no encontrado");
 //            }
 //        }
-    }
+
+//    private  void librosPorIdioma() {
+//        System.out.println("En que idioma quieres buscar");
+//        String idioma = scanner.nextLine().toLowerCase();
+//        String lenguaje = idiomaLibro(idioma);
+//        System.out.println("Lenguaje escogido:" + lenguaje);
+//        List<Libro> librosLenguajes = repository1.findByLenguajes(lenguaje);
+//        if (librosLenguajes.isEmpty()) {
+//            System.out.println("No hay libros en ese idioma");
+//        }else{
+//            libros.stream().forEach(System.out::println);
+//        }
+//    }
+//
+//    private String idiomaLibro(String idioma) {
+//        switch (idioma) {
+//            case "ingles":
+//                return "{en}";
+//
+//            case "frances":
+//                return "{fr}";
+//
+//            case "portugues":
+//                return "{pt}";
+//
+//            case "español":
+//                return "{es}";
+//
+//            case "ruso":
+//                return "{ru}";
+//
+//            case "italiano":
+//                return "{it}";
+//
+//            default:
+//                System.out.println("Ese idioma no lo tengo, pero para no ser mala onda te dire los que esten en español");
+//                return "{es}";
+//        }
+//    }
+
 }
