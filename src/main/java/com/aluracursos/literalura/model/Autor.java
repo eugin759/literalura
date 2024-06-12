@@ -21,6 +21,9 @@ public class Autor {
     private List<Libro> libros;
 
     public Autor() {
+        this.nombre = "Anonymous";
+        this.fechaNacimiento = null;
+        this.fechaMuerte = null;
     }
 
 
@@ -30,6 +33,7 @@ public class Autor {
         this.fechaMuerte = datosAutor.fechaMuerte();
 
     }
+
 
     public Long getId() {
         return Id;
@@ -74,10 +78,13 @@ public class Autor {
 
     @Override
     public String toString() {
-        return "Autor:" +
-                ", nombre='" + nombre + '\'' +
-                ", fechaNacimiento=" + fechaNacimiento +
-                ", fechaMuerte=" + fechaMuerte +
-                ", libros=" + libros.stream().map(Libro::getTitulo).collect(Collectors.toUnmodifiableList()) + "\n";
+        return "~°~°~°~°~°~°Autor°~°~°~°~°~°~" + "\n" +
+                "Nombre: " + nombre + "\n" +
+                "FechaNacimiento: " + fechaNacimiento + "\n" +
+                "FechaMuerte: " + fechaMuerte + "\n" +
+                "Libros: " + libros.stream().map(Libro::getTitulo).collect(Collectors.toUnmodifiableList())
+                + "\n" +"~°~°~°~°~°~°~°~°~°~°~°~°~°~°~" + "\n";
+
+
     }
 }

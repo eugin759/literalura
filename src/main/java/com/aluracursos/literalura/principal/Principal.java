@@ -109,28 +109,42 @@ public class Principal {
 
     }
 
+    private  Autor obtenerAutor(DatosLibro datosLibro){
+        List<DatosAutor> datosautores = datosLibro.autor();
+        if (!datosautores.isEmpty()){
+            DatosAutor datosAutor = datosLibro.autor().get(0);
+            Autor autor = new Autor(datosAutor);
+            System.out.println("Autor: "+ autor.getNombre());
+            return autor;
+        }else {
+            Autor autor = new Autor();
+            System.out.println("Autor: " + autor.getNombre());
+            return autor;
+        }
+    }
+
+    private void guardadAutor(Autor autor){
+        autorOptional = repository2.findByNombreContainsIgnoreCase(autor.getNombre());
+        if(autorOptional.isPresent()){
+        }else{
+            repository2.save(autor);
+        }
+    }
+
 
     private void buscarLibro(){
         DatosLibro datosLibro = getDatosLibro();//creamos la plantilla de datos para maniobrar
         if(datosLibro != null){
-            DatosAutor datosAutor = datosLibro.autor().get(0);//creamos la plantilla de datos para maniobrar
+
             libroOptional = repository1.findByTitulo(datosLibro.titulo()); //traemos info de la base de datos
             if (libroOptional.isPresent()){
-                System.out.println("Libro existente");
+                System.out.println("Libro existente no hay necesidad de registrar");
             }else {
-                autorOptional  = repository2.findByNombreContainsIgnoreCase(datosAutor.nombre());
-                if (autorOptional.isPresent()) {
-                    Autor autor = new Autor(datosAutor);
-                    Libro libro = new Libro(datosLibro, autor);
-                    repository1.save(libro);
-
-                }else{
-                    Autor autor = new Autor(datosAutor);
-                    Libro libro = new Libro(datosLibro, autor);
-                    repository2.save(autor);
-                    repository1.save(libro);
-
-                }
+                Autor autor = obtenerAutor(datosLibro);
+                guardadAutor(autor);
+                Libro libro = new Libro(datosLibro, autor);
+                System.out.println(libro);
+                repository1.save(libro);
             }
 
         }else{
@@ -167,7 +181,6 @@ public class Principal {
                 System.out.println("no hay nadie vivo en este año");
 
             }else{
-                System.out.println("Si hubo:");
                 autoresVivos.stream().forEach(System.out::println);
             }
         }catch (InputMismatchException e){
@@ -182,8 +195,8 @@ public class Principal {
         String idioma = scanner.nextLine().toLowerCase();
         String lenguaje = idiomaLibro(idioma);
         System.out.println("Lenguaje escogido:" + lenguaje);
-        libros = repository1.findByLenguajesContaining(lenguaje);
-        if (libros == null) {
+        List<Libro> librosLenguajes = repository1.findByLenguajes(lenguaje);
+        if (librosLenguajes.isEmpty()) {
             System.out.println("No hay libros en ese idioma");
         }else{
             libros.stream().forEach(System.out::println);
@@ -204,9 +217,54 @@ public class Principal {
             case "español":
                 return "es";
 
+            case "ruso":
+                return "ru";
+
+            case "italiano":
+                return "it";
+
             default:
-                System.out.println("Esa no es una opcion valida, pero para no ser mala onda te dire los que esten en español");
+                System.out.println("Ese idioma no lo tengo, pero para no ser mala onda te dire los que esten en español");
                 return "es";
         }
+
+
+
+//        private void buscarLibro(){
+//            DatosLibro datosLibro = getDatosLibro();//creamos la plantilla de datos para maniobrar
+//            if(datosLibro != null){
+//
+//                libroOptional = repository1.findByTitulo(datosLibro.titulo()); //traemos info de la base de datos
+//                if (libroOptional.isPresent()){
+//                    System.out.println("Libro existente");
+//                }else {
+//                    List<DatosAutor> trycatchAutor = datosLibro.autor();
+//                    if(!trycatchAutor.isEmpty()) {
+//                        DatosAutor datosAutor = datosLibro.autor().get(0);//creamos la plantilla de datos para maniobrar
+//                        autorOptional = repository2.findByNombreContainsIgnoreCase(datosAutor.nombre());
+//                        if (autorOptional.isPresent()) {
+//                            Autor autor = new Autor(datosAutor);
+//                            Libro libro = new Libro(datosLibro, autor);
+//                            repository1.save(libro);
+//
+//                        } else {
+//                            Autor autor = new Autor(datosAutor);
+//                            Libro libro = new Libro(datosLibro, autor);
+//                            repository2.save(autor);
+//                            repository1.save(libro);
+//
+//                        }
+//                    }else {
+//                        Autor autorAnonimo = new Autor();
+//                        autorOptional = repository2.findByNombreContainsIgnoreCase(autorAnonimo.getNombre());
+//                        Libro libro = new Libro(datosLibro, autorAnonimo);
+//                        repository1.save(libro);
+//                    }
+//                }
+//
+//            }else{
+//                System.out.println("libro no encontrado");
+//            }
+//        }
     }
 }
